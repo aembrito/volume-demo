@@ -11,4 +11,4 @@ rm -rf /demo/encrypted_volume/
 mkdir /demo/encrypted_volume/
 
 # execute the python app with the deployed security session
-SCONE_VERSION=7 SCONE_CONFIG_ID=volume_policy/volume_service python
+SCONE_VERSION=1 SCONE_CAS_ADDR=$CAS_ADDR SCONE_CONFIG_ID=volume_policy-$POSTFIX/volume_service python

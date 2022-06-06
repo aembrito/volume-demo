@@ -1,28 +1,26 @@
 version: '3.2'
 services:
     las:
-        image: registry.scontain.com:5050/sconecuratedimages/services:las-scone5.1
+        image: registry.scontain.com:5050/sconecuratedimages/kubernetes:las
         devices:
-         - "/dev/isgx"
-    cas:
-        image: registry.scontain.com:5050/sconecuratedimages/services:cas.preprovisioned-scone5.1
-        devices:
-         - "/dev/isgx"
-        depends_on:
-         - las
+         - "/dev/sgx_enclave"
+         - "/dev/sgx_provision"
     volume-demo:
-        image: registry.scontain.com:5050/sconecuratedimages/apps:python-3.7.3-alpine3.10-scone5.1
+        image: registry.scontain.com:5050/sconecuratedimages/apps:python-3.7.3-alpine3.10-scone5.7.0
         environment:
          - SCONE_MODE=hw
          - SCONE_HEAP=512M
          - SCONE_SYSLIBS=1
-         - SCONE_LOG=3
+         - SCONE_LOG=error
          - SCONE_ALLOW_DLOPEN=2
+         - POSTFIX
+         - CAS_ADDR
+         - CAS_MRENCLAVE
         devices:
-         - "/dev/isgx"
+         - "/dev/sgx_enclave"
+         - "/dev/sgx_provision"
         command: sh -c "apk add curl && cd /demo/ && ./helper_scripts/alpine_wait_for_las_and_cas.sh && ./run.sh"
         depends_on:
          - las
-         - cas
         volumes:
          - .:/demo
